@@ -67,6 +67,7 @@ public class Exchangers {
             throw new IllegalArgumentException("handler == null");
         }
         url = url.addParameterIfAbsent(Constants.CODEC_KEY, "exchange");
+        //todo 进行端口 暴露 HeaderExchanger
         return getExchanger(url).bind(url, handler);
     }
 
@@ -108,12 +109,13 @@ public class Exchangers {
         url = url.addParameterIfAbsent(Constants.CODEC_KEY, "exchange");
         return getExchanger(url).connect(url, handler);
     }
-
+    //todo
     public static Exchanger getExchanger(URL url) {
+        //todo 默认值 为header
         String type = url.getParameter(Constants.EXCHANGER_KEY, Constants.DEFAULT_EXCHANGER);
         return getExchanger(type);
     }
-
+    //todo Exchanger = HeaderExchanger
     public static Exchanger getExchanger(String type) {
         return ExtensionLoader.getExtensionLoader(Exchanger.class).getExtension(type);
     }

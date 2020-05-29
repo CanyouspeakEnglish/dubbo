@@ -45,8 +45,11 @@ public abstract class AbstractEndpoint extends AbstractPeer implements Resetable
 
     public AbstractEndpoint(URL url, ChannelHandler handler) {
         super(url, handler);
+        //todo 设置编解码器
         this.codec = getChannelCodec(url);
+        //todo 设置超时时间
         this.timeout = url.getPositiveParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT);
+        //todo 设置连接超时时间
         this.connectTimeout = url.getPositiveParameter(Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT);
     }
 

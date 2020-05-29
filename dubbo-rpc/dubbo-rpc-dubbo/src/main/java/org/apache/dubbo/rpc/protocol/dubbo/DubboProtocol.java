@@ -284,6 +284,7 @@ public class DubboProtocol extends AbstractProtocol {
         // export service.
         String key = serviceKey(url);
         DubboExporter<T> exporter = new DubboExporter<T>(invoker, key, exporterMap);
+        //todo 将服务 暴露添加到本地缓存 exporterMap key = url vaule = exporter
         exporterMap.put(key, exporter);
 
         //export an stub service for dispatching event
@@ -299,7 +300,7 @@ public class DubboProtocol extends AbstractProtocol {
 
             }
         }
-
+        //todo 暴露端口
         openServer(url);
         optimizeSerialization(url);
 
@@ -312,11 +313,14 @@ public class DubboProtocol extends AbstractProtocol {
         //client can export a service which's only for server to invoke
         boolean isServer = url.getParameter(IS_SERVER_KEY, true);
         if (isServer) {
+            //todo 判断是否缓存服务 key=ip:port
             ProtocolServer server = serverMap.get(key);
             if (server == null) {
+                //todo 进行双检
                 synchronized (this) {
                     server = serverMap.get(key);
                     if (server == null) {
+                        //todo createServer 开始暴露服务
                         serverMap.put(key, createServer(url));
                     }
                 }
@@ -340,9 +344,11 @@ public class DubboProtocol extends AbstractProtocol {
         if (str != null && str.length() > 0 && !ExtensionLoader.getExtensionLoader(Transporter.class).hasExtension(str)) {
             throw new RpcException("Unsupported server type: " + str + ", url: " + url);
         }
-
+        //todo exchangeServer 进行端口绑定
+        //todo requestHandle 为dubboprotocol 中的全局定义 ExchangeHandlerAdapter
         ExchangeServer server;
         try {
+            //todo 委派给Exchangers 端口暴露
             server = Exchangers.bind(url, requestHandler);
         } catch (RemotingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);

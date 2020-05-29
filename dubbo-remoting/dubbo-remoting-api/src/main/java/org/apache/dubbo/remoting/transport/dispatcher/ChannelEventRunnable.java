@@ -54,6 +54,7 @@ public class ChannelEventRunnable implements Runnable {
     public void run() {
         if (state == ChannelState.RECEIVED) {
             try {
+                //ChannelHandlerDispatcher
                 handler.received(channel, message);
             } catch (Exception e) {
                 logger.warn("ChannelEventRunnable handle " + state + " operation error, channel is " + channel

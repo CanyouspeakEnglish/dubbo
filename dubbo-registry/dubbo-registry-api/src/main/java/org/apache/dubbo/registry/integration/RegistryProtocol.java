@@ -189,11 +189,13 @@ public class RegistryProtocol implements Protocol {
                 registryUrl,
                 registered));
     }
-
+    //todo 服务注册协议
     @Override
     public <T> Exporter<T> export(final Invoker<T> originInvoker) throws RpcException {
+        //todo 此时的协议为 配置的注册中心 以zk为例 zookeeper:\\ip:port\interface?application.name=xx
         URL registryUrl = getRegistryUrl(originInvoker);
         // url to export locally
+        //todo 暴露的地址 以dubbo协议为例 dubbo:\\ip:port\interface?application.name=xx
         URL providerUrl = getProviderUrl(originInvoker);
 
         // Subscribe the override data
@@ -206,6 +208,7 @@ public class RegistryProtocol implements Protocol {
 
         providerUrl = overrideUrlWithConfig(providerUrl, overrideSubscribeListener);
         //export invoker
+        //todo 开始暴露服务
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl);
 
         // url to registry
@@ -251,10 +254,14 @@ public class RegistryProtocol implements Protocol {
 
     @SuppressWarnings("unchecked")
     private <T> ExporterChangeableWrapper<T> doLocalExport(final Invoker<T> originInvoker, URL providerUrl) {
+        //todo key为url
         String key = getCacheKey(originInvoker);
-
+        //todo bounds 为 Map<String,ExporterChangeableWrapper>
         return (ExporterChangeableWrapper<T>) bounds.computeIfAbsent(key, s -> {
+            //todo 不存在进行 重新创建并且 包装invoker
             Invoker<?> invokerDelegate = new InvokerDelegate<>(originInvoker, providerUrl);
+            //todo 进行服务暴露 此时的url为 dubbo://ip:port/interface?
+            //todo protocol = DubboProtocol  invokerDelegate 为包装类
             return new ExporterChangeableWrapper<>((Exporter<T>) protocol.export(invokerDelegate), originInvoker);
         });
     }

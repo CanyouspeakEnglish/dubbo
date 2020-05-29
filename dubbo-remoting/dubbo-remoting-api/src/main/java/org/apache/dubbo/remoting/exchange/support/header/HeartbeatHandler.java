@@ -60,7 +60,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate {
         setWriteTimestamp(channel);
         handler.sent(channel, message);
     }
-
+    //1
     @Override
     public void received(Channel channel, Object message) throws RemotingException {
         setReadTimestamp(channel);
@@ -87,6 +87,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate {
             }
             return;
         }
+        //AllChannelHandler
         handler.received(channel, message);
     }
 

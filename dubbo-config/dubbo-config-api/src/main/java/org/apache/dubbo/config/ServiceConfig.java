@@ -100,7 +100,7 @@ import static org.apache.dubbo.rpc.Constants.SCOPE_LOCAL;
 import static org.apache.dubbo.rpc.Constants.SCOPE_REMOTE;
 import static org.apache.dubbo.rpc.Constants.TOKEN_KEY;
 import static org.apache.dubbo.rpc.cluster.Constants.EXPORT_KEY;
-
+//todo 配置入口
 public class ServiceConfig<T> extends ServiceConfigBase<T> {
 
     public static final Logger logger = LoggerFactory.getLogger(ServiceConfig.class);
@@ -322,6 +322,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
             repository.registerService(pathKey, interfaceClass);
             // TODO, uncomment this line once service key is unified
             serviceMetadata.setServiceKey(pathKey);
+            //todo 进行暴露
             doExportUrlsFor1Protocol(protocolConfig, registryURLs);
         }
     }
@@ -485,10 +486,13 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                         if (StringUtils.isNotEmpty(proxy)) {
                             registryURL = registryURL.addParameter(PROXY_KEY, proxy);
                         }
-
+                        //todo 获取代理对象  PROXY_FACTORY =  ProxyFactory$Adapte
+                        //todo invoker = AbstractProxyInvoker
                         Invoker<?> invoker = PROXY_FACTORY.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(EXPORT_KEY, url.toFullString()));
+                        //todo 进行包装
                         DelegateProviderMetaDataInvoker wrapperInvoker = new DelegateProviderMetaDataInvoker(invoker, this);
-
+                        //todo 进行服务暴露  Protocol = Protocol$Adapte
+                        //todo 调用 RegistryProtocol
                         Exporter<?> exporter = PROTOCOL.export(wrapperInvoker);
                         exporters.add(exporter);
                     }

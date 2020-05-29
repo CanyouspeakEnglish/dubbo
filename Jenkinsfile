@@ -20,7 +20,7 @@ pipeline {
         jdk 'JDK 1.8 (latest)'
     }
 
-    triggers {
+    TRIGGERS {
         cron '''TZ=Asia/Shanghai
         H 2,14 * * *'''
         pollSCM '''TZ=Asia/Shanghai

@@ -53,6 +53,7 @@ public class Transporters {
         } else {
             handler = new ChannelHandlerDispatcher(handlers);
         }
+        //todo 适配类 为  Transporter$Adapte 默认值为netty NettyTransporter
         return getTransporter().bind(url, handler);
     }
 

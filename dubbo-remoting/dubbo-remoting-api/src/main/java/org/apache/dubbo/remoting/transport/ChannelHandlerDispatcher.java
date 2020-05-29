@@ -97,6 +97,7 @@ public class ChannelHandlerDispatcher implements ChannelHandler {
 
     @Override
     public void received(Channel channel, Object message) {
+        //DecodeHandler HeaderExchangeHandler // ExchangeHandlerAdapter
         for (ChannelHandler listener : channelHandlers) {
             try {
                 listener.received(channel, message);

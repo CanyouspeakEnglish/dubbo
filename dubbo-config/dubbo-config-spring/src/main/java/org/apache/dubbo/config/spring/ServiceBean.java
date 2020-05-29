@@ -36,6 +36,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
  * ServiceFactoryBean
  *
  * @export
+ * //todo 服务暴露的入口
  */
 public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean,
         ApplicationContextAware, BeanNameAware, ApplicationEventPublisherAware {
@@ -103,6 +104,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 
     /**
      * @since 2.6.5
+     * //todo 暴露入口
      */
     @Override
     public void exported() {

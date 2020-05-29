@@ -29,9 +29,10 @@ import org.apache.dubbo.remoting.Transporter;
 public class NettyTransporter implements Transporter {
 
     public static final String NAME = "netty";
-
+    //todo netty4
     @Override
     public RemotingServer bind(URL url, ChannelHandler handler) throws RemotingException {
+        //todo 在构造方法中进行暴露
         return new NettyServer(url, handler);
     }
 

@@ -47,7 +47,7 @@ public class DecodeHandler extends AbstractChannelHandlerDelegate {
         if (message instanceof Response) {
             decode(((Response) message).getResult());
         }
-
+        //HeaderExchangeHandler
         handler.received(channel, message);
     }
 

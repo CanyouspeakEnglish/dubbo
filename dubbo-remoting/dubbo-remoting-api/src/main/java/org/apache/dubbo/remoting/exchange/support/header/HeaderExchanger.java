@@ -38,9 +38,11 @@ public class HeaderExchanger implements Exchanger {
     public ExchangeClient connect(URL url, ExchangeHandler handler) throws RemotingException {
         return new HeaderExchangeClient(Transporters.connect(url, new DecodeHandler(new HeaderExchangeHandler(handler))), true);
     }
-
+    //todo
     @Override
     public ExchangeServer bind(URL url, ExchangeHandler handler) throws RemotingException {
+        //todo  进行编解码包装 以及事件处理
+        //todo 委托给 Transporters 进行网络操作
         return new HeaderExchangeServer(Transporters.bind(url, new DecodeHandler(new HeaderExchangeHandler(handler))));
     }
 
