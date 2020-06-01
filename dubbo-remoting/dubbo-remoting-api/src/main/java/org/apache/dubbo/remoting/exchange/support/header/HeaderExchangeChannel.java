@@ -95,6 +95,7 @@ final class HeaderExchangeChannel implements ExchangeChannel {
         if (message instanceof Request
                 || message instanceof Response
                 || message instanceof String) {
+            //todo 发送消息
             channel.send(message, sent);
         } else {
             Request request = new Request();

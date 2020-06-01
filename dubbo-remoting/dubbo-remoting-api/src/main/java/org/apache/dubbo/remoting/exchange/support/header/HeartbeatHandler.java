@@ -66,6 +66,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate {
         setReadTimestamp(channel);
         if (isHeartbeatRequest(message)) {
             Request req = (Request) message;
+            //todo 为双向
             if (req.isTwoWay()) {
                 Response res = new Response(req.getId(), req.getVersion());
                 res.setEvent(HEARTBEAT_EVENT);
@@ -87,7 +88,7 @@ public class HeartbeatHandler extends AbstractChannelHandlerDelegate {
             }
             return;
         }
-        //AllChannelHandler
+        // todo AllChannelHandler
         handler.received(channel, message);
     }
 
