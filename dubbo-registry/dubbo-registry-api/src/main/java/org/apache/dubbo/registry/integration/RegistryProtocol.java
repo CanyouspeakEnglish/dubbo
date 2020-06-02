@@ -446,6 +446,7 @@ public class RegistryProtocol implements Protocol {
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
         url = getRegistryUrl(url);
+        //todo 此时的registry为zookeeper
         Registry registry = registryFactory.getRegistry(url);
         if (RegistryService.class.equals(type)) {
             return proxyFactory.getInvoker((T) registry, type, url);
@@ -479,7 +480,7 @@ public class RegistryProtocol implements Protocol {
         }
         directory.buildRouterChain(subscribeUrl);
         directory.subscribe(toSubscribeUrl(subscribeUrl));
-
+        //todo directory 为 RegistryDirectory
         Invoker<T> invoker = cluster.join(directory);
         List<RegistryProtocolListener> listeners = findRegistryProtocolListeners(url);
         if (CollectionUtils.isEmpty(listeners)) {

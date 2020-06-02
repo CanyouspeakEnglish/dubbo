@@ -155,6 +155,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             throw new IllegalStateException("The invoker of ReferenceConfig(" + url + ") has already destroyed!");
         }
         if (ref == null) {
+            //todo 开始初始化
             init();
         }
         return ref;
@@ -184,12 +185,12 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         if (initialized) {
             return;
         }
-
+        //todo 初始化 bootstarp 实例
         if (bootstrap == null) {
             bootstrap = DubboBootstrap.getInstance();
             bootstrap.init();
         }
-
+        //todo 检查配置
         checkAndUpdateSubConfigs();
 
         checkStubAndLocal(interfaceClass);
@@ -254,7 +255,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         map.put(REGISTER_IP_KEY, hostToRegistry);
 
         serviceMetadata.getAttachments().putAll(map);
-
+        //todo 创建代理对象
         ref = createProxy(map);
 
         serviceMetadata.setTarget(ref);
@@ -271,6 +272,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
     @SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
     private T createProxy(Map<String, String> map) {
+        //todo 判断是否是本地暴露
         if (shouldJvmRefer(map)) {
             URL url = new URL(LOCAL_PROTOCOL, LOCALHOST_VALUE, 0, interfaceClass.getName()).addParameters(map);
             invoker = REF_PROTOCOL.refer(interfaceClass, url);
@@ -315,6 +317,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             }
 
             if (urls.size() == 1) {
+                //todo 获取invoke  REF_PROTOCOL 为RegistryProtocol
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
             } else {
                 List<Invoker<?>> invokers = new ArrayList<Invoker<?>>();
