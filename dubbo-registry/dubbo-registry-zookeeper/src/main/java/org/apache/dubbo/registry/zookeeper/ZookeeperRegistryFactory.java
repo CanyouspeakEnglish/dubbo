@@ -30,6 +30,7 @@ public class ZookeeperRegistryFactory extends AbstractRegistryFactory {
     private ZookeeperTransporter zookeeperTransporter;
 
     /**
+     * 通过依赖注入设置 zookeeperTransporter 默认用的是curator 客户端
      * Invisible injection of zookeeper client via IOC/SPI
      * @param zookeeperTransporter
      */

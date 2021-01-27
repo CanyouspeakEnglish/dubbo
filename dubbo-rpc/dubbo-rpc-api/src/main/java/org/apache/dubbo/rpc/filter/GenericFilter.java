@@ -55,6 +55,14 @@ import static org.apache.dubbo.rpc.Constants.GENERIC_KEY;
 @Activate(group = CommonConstants.PROVIDER, order = -20000)
 public class GenericFilter implements Filter, Filter.Listener {
 
+    /**
+     * next = ContextFilter
+     * 泛化调用
+     * @param invoker
+     * @param inv
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation inv) throws RpcException {
         if ((inv.getMethodName().equals($INVOKE) || inv.getMethodName().equals($INVOKE_ASYNC))

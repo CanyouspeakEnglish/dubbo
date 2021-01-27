@@ -156,6 +156,10 @@ public class RegistryProtocol implements Protocol {
         this.cluster = cluster;
     }
 
+    /**
+     * 依赖注入 此时的协议为包装的对象
+     * @param protocol
+     */
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
     }
@@ -179,6 +183,7 @@ public class RegistryProtocol implements Protocol {
 
     private void register(URL registryUrl, URL registeredProviderUrl) {
         Registry registry = registryFactory.getRegistry(registryUrl);
+        //AbstractRegistry FailbackRegistry
         registry.register(registeredProviderUrl);
     }
 
@@ -211,11 +216,13 @@ public class RegistryProtocol implements Protocol {
         //todo 开始暴露服务
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl);
 
-        // url to registry
+        // url to registry 通过url 获取注册中心
         final Registry registry = getRegistry(originInvoker);
+        //构建要注册的链接
         final URL registeredProviderUrl = getUrlToRegistry(providerUrl, registryUrl);
 
         // decide if we need to delay publish
+        //是否注册
         boolean register = providerUrl.getParameter(REGISTER_KEY, true);
         if (register) {
             register(registryUrl, registeredProviderUrl);
@@ -360,7 +367,9 @@ public class RegistryProtocol implements Protocol {
      * @return
      */
     protected Registry getRegistry(final Invoker<?> originInvoker) {
+        //改变协议 将原来的dubbo协议改写成  对应的注册中心协议 以zookeeper为例
         URL registryUrl = getRegistryUrl(originInvoker);
+        //AbstractRegistryFactory
         return registryFactory.getRegistry(registryUrl);
     }
 
@@ -442,6 +451,14 @@ public class RegistryProtocol implements Protocol {
         return key;
     }
 
+    /**
+     * 服务消费创建代理对象
+     * @param type Service class
+     * @param url  URL address for the remote service
+     * @param <T>
+     * @return
+     * @throws RpcException
+     */
     @Override
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
@@ -455,11 +472,13 @@ public class RegistryProtocol implements Protocol {
         // group="a,b" or group="*"
         Map<String, String> qs = StringUtils.parseQueryString(url.getParameterAndDecoded(REFER_KEY));
         String group = qs.get(GROUP_KEY);
+        //分组 refer 存在这个key那么就进行merge
         if (group != null && group.length() > 0) {
             if ((COMMA_SPLIT_PATTERN.split(group)).length > 1 || "*".equals(group)) {
                 return doRefer(getMergeableCluster(), registry, type, url);
             }
         }
+        //引用方法
         return doRefer(cluster, registry, type, url);
     }
 
@@ -468,25 +487,30 @@ public class RegistryProtocol implements Protocol {
     }
 
     private <T> Invoker<T> doRefer(Cluster cluster, Registry registry, Class<T> type, URL url) {
+        //创建RegistryDirectory
         RegistryDirectory<T> directory = new RegistryDirectory<T>(type, url);
         directory.setRegistry(registry);
         directory.setProtocol(protocol);
         // all attributes of REFER_KEY
+        //将消费地址的参数 装为map
         Map<String, String> parameters = new HashMap<String, String>(directory.getConsumerUrl().getParameters());
         URL subscribeUrl = new URL(CONSUMER_PROTOCOL, parameters.remove(REGISTER_IP_KEY), 0, type.getName(), parameters);
+        //应该注册
         if (directory.isShouldRegister()) {
             directory.setRegisteredConsumerUrl(subscribeUrl);
+            //将consumer 进行注册 为了监控
             registry.register(directory.getRegisteredConsumerUrl());
         }
         directory.buildRouterChain(subscribeUrl);
+        //设置订阅地址 并连接对应的服务地址
         directory.subscribe(toSubscribeUrl(subscribeUrl));
-        //todo directory 为 RegistryDirectory
+        //todo directory 为 RegistryDirectory 将多个包装为一个代理对象
         Invoker<T> invoker = cluster.join(directory);
         List<RegistryProtocolListener> listeners = findRegistryProtocolListeners(url);
         if (CollectionUtils.isEmpty(listeners)) {
             return invoker;
         }
-
+        //包装
         RegistryInvokerWrapper<T> registryInvokerWrapper = new RegistryInvokerWrapper<>(directory, cluster, invoker, subscribeUrl);
         for (RegistryProtocolListener listener : listeners) {
             listener.onRefer(this, registryInvokerWrapper);

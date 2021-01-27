@@ -27,7 +27,7 @@ import org.springframework.core.Ordered;
 /**
  * The {@link ApplicationListener} for {@link DubboBootstrap}'s lifecycle when the {@link ContextRefreshedEvent}
  * and {@link ContextClosedEvent} raised
- *
+ *BoostStrap监听
  * @since 2.7.5
  */
 public class DubboBootstrapApplicationListener extends OneTimeExecutionApplicationContextEventListener
@@ -48,8 +48,10 @@ public class DubboBootstrapApplicationListener extends OneTimeExecutionApplicati
 
     @Override
     public void onApplicationContextEvent(ApplicationContextEvent event) {
+        //启动监听
         if (event instanceof ContextRefreshedEvent) {
             onContextRefreshedEvent((ContextRefreshedEvent) event);
+            //停止事件
         } else if (event instanceof ContextClosedEvent) {
             onContextClosedEvent((ContextClosedEvent) event);
         }

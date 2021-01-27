@@ -16,11 +16,15 @@
  */
 package org.apache.dubbo.demo;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import java.util.concurrent.CompletableFuture;
-
+@Path("/demoService")
 public interface DemoService {
-
-    String sayHello(String name);
+    @GET
+    @Path("/hello")
+    String sayHello(@QueryParam("name")  String name);
 
     default CompletableFuture<String> sayHelloAsync(String name) {
         return CompletableFuture.completedFuture(sayHello(name));

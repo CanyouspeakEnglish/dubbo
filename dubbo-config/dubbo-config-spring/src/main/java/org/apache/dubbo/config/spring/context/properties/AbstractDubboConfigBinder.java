@@ -22,6 +22,7 @@ import org.springframework.core.env.PropertySource;
 
 /**
  * Abstract {@link DubboConfigBinder} implementation
+ * 绑定
  */
 public abstract class AbstractDubboConfigBinder implements DubboConfigBinder {
 

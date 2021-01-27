@@ -47,12 +47,13 @@ public class DubboConfigConfigurationRegistrar implements ImportBeanDefinitionRe
 
         // Single Config Bindings
         registerBeans(registry, DubboConfigConfiguration.Single.class);
-
+        //是否开启多个
         if (multiple) { // Since 2.6.6 https://github.com/apache/dubbo/issues/3193
             registerBeans(registry, DubboConfigConfiguration.Multiple.class);
         }
 
-        // Since 2.7.6
+        // 注册通用 ReferenceAnnotationBeanPostProcessor  DubboConfigAliasPostProcessor
+        // DubboLifecycleComponentApplicationListener DubboBootstrapApplicationListener DubboConfigDefaultPropertyValueBeanPostProcessor
         registerCommonBeans(registry);
     }
 }

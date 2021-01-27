@@ -199,7 +199,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         serviceMetadata.setServiceType(getInterfaceClass());
         serviceMetadata.setServiceInterfaceName(getInterface());
         serviceMetadata.setTarget(getRef());
-
+        //配置延迟
         if (shouldDelay()) {
             DELAY_EXPORT_EXECUTOR.schedule(this::doExport, getDelay(), TimeUnit.MILLISECONDS);
         } else {
@@ -284,7 +284,9 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         postProcessConfig();
     }
 
-
+    /**
+     * 暴露
+     */
     protected synchronized void doExport() {
         if (unexported) {
             throw new IllegalStateException("The service " + interfaceClass.getName() + " has already unexported!");
@@ -293,7 +295,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
             return;
         }
         exported = true;
-
+        //地址 为空的话就用接口地址
         if (StringUtils.isEmpty(path)) {
             path = interfaceName;
         }

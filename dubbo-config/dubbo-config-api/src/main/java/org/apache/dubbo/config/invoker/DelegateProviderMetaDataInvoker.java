@@ -51,8 +51,15 @@ public class DelegateProviderMetaDataInvoker<T> implements Invoker {
         return invoker.isAvailable();
     }
 
+    /**
+     * 元数据包装invoker
+     * @param invocation
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invocation invocation) throws RpcException {
+        //invoker = AbstractProxyInvoker
         return invoker.invoke(invocation);
     }
 

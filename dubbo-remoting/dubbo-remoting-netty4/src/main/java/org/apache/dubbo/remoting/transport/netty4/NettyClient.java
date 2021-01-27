@@ -84,7 +84,7 @@ public class NettyClient extends AbstractClient {
 
     /**
      * Init bootstrap
-     *
+     *构建参数
      * @throws Throwable
      */
     @Override
@@ -126,9 +126,14 @@ public class NettyClient extends AbstractClient {
         });
     }
 
+    /**
+     * 启动连接
+     * @throws Throwable
+     */
     @Override
     protected void doConnect() throws Throwable {
         long start = System.currentTimeMillis();
+        //连接
         ChannelFuture future = bootstrap.connect(getConnectAddress());
         try {
             boolean ret = future.awaitUninterruptibly(getConnectTimeout(), MILLISECONDS);

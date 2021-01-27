@@ -104,7 +104,9 @@ public class DubboProtocol extends AbstractProtocol {
     private final Map<String, List<ReferenceCountExchangeClient>> referenceClientMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Object> locks = new ConcurrentHashMap<>();
     private final Set<String> optimizers = new ConcurrentHashSet<>();
-
+    /**
+     * 进行业务接收请求处理
+     */
     private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {
 
         @Override
@@ -117,6 +119,7 @@ public class DubboProtocol extends AbstractProtocol {
             }
 
             Invocation inv = (Invocation) message;
+            //获取代理对象
             Invoker<?> invoker = getInvoker(channel, inv);
             // need to consider backward-compatibility if it's a callback
             if (Boolean.TRUE.toString().equals(inv.getObjectAttachments().get(IS_CALLBACK_SERVICE_INVOKE))) {
@@ -142,6 +145,9 @@ public class DubboProtocol extends AbstractProtocol {
                 }
             }
             RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());
+            //ProtocolFilterWrapper->EchoFilter->ClassLoaderFilter->GenericFilter->ContextFilter->TraceFilter
+            // ->TimeoutFilter->MonitorFilter->ExceptionFilter->InvokerWrapper->DelegateProviderMetaDataInvoker
+            // ->AbstractProxyInvoker->Wrapper#invokeMethod()
             Result result = invoker.invoke(inv);
             return result.thenApply(Function.identity());
         }
@@ -258,13 +264,16 @@ public class DubboProtocol extends AbstractProtocol {
                 (String) inv.getObjectAttachments().get(VERSION_KEY),
                 (String) inv.getObjectAttachments().get(GROUP_KEY)
         );
+
         DubboExporter<?> exporter = (DubboExporter<?>) exporterMap.get(serviceKey);
 
         if (exporter == null) {
             throw new RemotingException(channel, "Not found exported service: " + serviceKey + " in " + exporterMap.keySet() + ", may be version or group mismatch " +
                     ", channel: consumer: " + channel.getRemoteAddress() + " --> provider: " + channel.getLocalAddress() + ", message:" + getInvocationWithoutData(inv));
         }
-
+        //ProtocolFilterWrapper->EchoFilter->ClassLoaderFilter->GenericFilter->ContextFilter->TraceFilter
+        // ->TimeoutFilter->MonitorFilter->ExceptionFilter
+        // ->InvokerWrapper->DelegateProviderMetaDataInvoker->AbstractProxyInvoker->Wrapper#invokeMethod()
         return exporter.getInvoker();
     }
 
@@ -402,6 +411,14 @@ public class DubboProtocol extends AbstractProtocol {
         }
     }
 
+    /**
+     *  协议绑定 在连接注册中心后 通过地址连接客户端
+     * @param serviceType
+     * @param url
+     * @param <T>
+     * @return
+     * @throws RpcException
+     */
     @Override
     public <T> Invoker<T> protocolBindingRefer(Class<T> serviceType, URL url) throws RpcException {
         optimizeSerialization(url);
@@ -413,6 +430,11 @@ public class DubboProtocol extends AbstractProtocol {
         return invoker;
     }
 
+    /**
+     * 创建客户端连接
+     * @param url
+     * @return
+     */
     private ExchangeClient[] getClients(URL url) {
         // whether to share connection
 
@@ -439,6 +461,7 @@ public class DubboProtocol extends AbstractProtocol {
                 clients[i] = shareClients.get(i);
 
             } else {
+                //创建连接
                 clients[i] = initClient(url);
             }
         }
@@ -591,10 +614,12 @@ public class DubboProtocol extends AbstractProtocol {
         ExchangeClient client;
         try {
             // connection should be lazy
+            //判断是不是懒加载
             if (url.getParameter(LAZY_CONNECT_KEY, false)) {
                 client = new LazyConnectExchangeClient(url, requestHandler);
 
             } else {
+                //创建连接
                 client = Exchangers.connect(url, requestHandler);
             }
 

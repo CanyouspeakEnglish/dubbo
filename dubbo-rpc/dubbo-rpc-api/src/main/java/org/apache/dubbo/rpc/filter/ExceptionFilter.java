@@ -47,8 +47,17 @@ import java.lang.reflect.Method;
 public class ExceptionFilter implements Filter, Filter.Listener {
     private Logger logger = LoggerFactory.getLogger(ExceptionFilter.class);
 
+    /**
+     *
+     * 异常处理过滤器
+     * @param invoker
+     * @param invocation
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
+        //invoker = InvokerWrapper
         return invoker.invoke(invocation);
     }
 

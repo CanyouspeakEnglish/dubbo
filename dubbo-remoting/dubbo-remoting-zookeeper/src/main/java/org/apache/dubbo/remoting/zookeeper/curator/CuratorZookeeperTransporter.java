@@ -21,6 +21,13 @@ import org.apache.dubbo.remoting.zookeeper.ZookeeperClient;
 import org.apache.dubbo.remoting.zookeeper.support.AbstractZookeeperTransporter;
 
 public class CuratorZookeeperTransporter extends AbstractZookeeperTransporter {
+    /**
+     * 返回zookeeperClient
+     * @param url the url that will create zookeeper connection .
+     *            The url in AbstractZookeeperTransporter#connect parameter is rewritten by this one.
+     *            such as: zookeeper://127.0.0.1:2181/org.apache.dubbo.remoting.zookeeper.ZookeeperTransporter
+     * @return
+     */
     @Override
     public ZookeeperClient createZookeeperClient(URL url) {
         return new CuratorZookeeperClient(url);

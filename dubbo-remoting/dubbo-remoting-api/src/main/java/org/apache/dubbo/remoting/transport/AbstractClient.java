@@ -94,6 +94,13 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         executor = executorRepository.createExecutorIfAbsent(url);
     }
 
+    /**
+     * MultiMessageHandler -> HeartbeatHandler->AllDispatcher->AllChannelHandler->DecodeHandler
+     *   ->HeaderExchangeHandler->ExchangeHandlerAdapter$lambleDubboProtocol
+     * @param url
+     * @param handler
+     * @return
+     */
     protected static ChannelHandler wrapChannelHandler(URL url, ChannelHandler handler) {
         return ChannelHandlers.wrap(handler, url);
     }
@@ -175,9 +182,14 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
         if (channel == null || !channel.isConnected()) {
             throw new RemotingException(this, "message can not send, because channel is closed . url:" + getUrl());
         }
+        //发送
         channel.send(message, sent);
     }
 
+    /**
+     * 连接
+     * @throws RemotingException
+     */
     protected void connect() throws RemotingException {
 
         connectLock.lock();

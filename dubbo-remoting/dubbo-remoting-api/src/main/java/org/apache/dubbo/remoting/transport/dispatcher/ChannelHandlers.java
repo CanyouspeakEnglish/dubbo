@@ -30,6 +30,14 @@ public class ChannelHandlers {
     protected ChannelHandlers() {
     }
 
+    /**
+     * MultiMessageHandler -> HeartbeatHandler->AllDispatcher->AllChannelHandler->DecodeHandler
+     *      * ->HeaderExchangeHandler->ExchangeHandlerAdapter$lambleDubboProtocol
+     * 包装handle链
+     * @param handler
+     * @param url
+     * @return
+     */
     public static ChannelHandler wrap(ChannelHandler handler, URL url) {
         return ChannelHandlers.getInstance().wrapInternal(handler, url);
     }
@@ -42,6 +50,13 @@ public class ChannelHandlers {
         INSTANCE = instance;
     }
 
+    /**
+     * MultiMessageHandler -> HeartbeatHandler->AllDispatcher->AllChannelHandler->DecodeHandler
+     * ->HeaderExchangeHandler->ExchangeHandlerAdapter$lambleDubboProtocol
+     * @param handler
+     * @param url
+     * @return
+     */
     protected ChannelHandler wrapInternal(ChannelHandler handler, URL url) {
         return new MultiMessageHandler(new HeartbeatHandler(ExtensionLoader.getExtensionLoader(Dispatcher.class)
                 .getAdaptiveExtension().dispatch(handler, url)));

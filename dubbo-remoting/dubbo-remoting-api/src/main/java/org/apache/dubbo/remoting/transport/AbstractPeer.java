@@ -45,9 +45,16 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
             throw new IllegalArgumentException("handler == null");
         }
         this.url = url;
+        //MultiMessageHandler -> HeartbeatHandler->AllDispatcher->AllChannelHandler->DecodeHandler
+        //->HeaderExchangeHandler->ExchangeHandlerAdapter$lambleDubboProtocol
         this.handler = handler;
     }
 
+    /**
+     * 发送消息
+     * @param message
+     * @throws RemotingException
+     */
     @Override
     public void send(Object message) throws RemotingException {
         send(message, url.getParameter(Constants.SENT_KEY, false));
@@ -144,6 +151,7 @@ public abstract class AbstractPeer implements Endpoint, ChannelHandler {
         if (closed) {
             return;
         }
+        //MultiMessageHandler
         handler.received(ch, msg);
     }
 

@@ -71,6 +71,14 @@ public class TraceFilter implements Filter {
         }
     }
 
+    /**
+     * next = TimeoutFilter
+     * 调用链路过滤器
+     * @param invoker
+     * @param invocation
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         long start = System.currentTimeMillis();

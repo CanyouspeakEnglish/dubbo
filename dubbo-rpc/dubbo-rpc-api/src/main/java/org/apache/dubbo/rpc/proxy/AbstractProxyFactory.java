@@ -58,7 +58,7 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
                 interfaces.add(ReflectUtils.forName(type));
             }
         }
-
+        //是否为泛化
         if (generic) {
             if (!GenericService.class.isAssignableFrom(invoker.getInterface())) {
                 interfaces.add(com.alibaba.dubbo.rpc.service.GenericService.class);

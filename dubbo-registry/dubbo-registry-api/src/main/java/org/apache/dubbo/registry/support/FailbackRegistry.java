@@ -99,10 +99,12 @@ public abstract class FailbackRegistry extends AbstractRegistry {
     }
 
     private void addFailedRegistered(URL url) {
+        //先判断是否已经存在了
         FailedRegisteredTask oldOne = failedRegistered.get(url);
         if (oldOne != null) {
             return;
         }
+        //创建一个重试的任务
         FailedRegisteredTask newTask = new FailedRegisteredTask(url, this);
         oldOne = failedRegistered.putIfAbsent(url, newTask);
         if (oldOne == null) {
@@ -112,6 +114,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
     }
 
     private void removeFailedRegistered(URL url) {
+        //移除之前失败的注册链接
         FailedRegisteredTask f = failedRegistered.remove(url);
         if (f != null) {
             f.cancel();
@@ -242,9 +245,11 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             Throwable t = e;
 
             // If the startup detection is opened, the Exception is thrown directly.
+            //如果检查 那么直接抛出异常
             boolean check = getUrl().getParameter(Constants.CHECK_KEY, true)
                     && url.getParameter(Constants.CHECK_KEY, true)
                     && !CONSUMER_PROTOCOL.equals(url.getProtocol());
+            //应该跳过的异常 也直接抛出
             boolean skipFailback = t instanceof SkipFailbackWrapperException;
             if (check || skipFailback) {
                 if (skipFailback) {
@@ -256,6 +261,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             }
 
             // Record a failed registration request to a failed list, retry regularly
+            //TODO 加入重试地址 此处的设计很有思想可以借鉴
             addFailedRegistered(url);
         }
     }
@@ -386,6 +392,12 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         }
     }
 
+    /**
+     * 通知
+     * @param url      consumer side url
+     * @param listener listener
+     * @param urls     provider latest urls
+     */
     @Override
     protected void notify(URL url, NotifyListener listener, List<URL> urls) {
         if (url == null) {

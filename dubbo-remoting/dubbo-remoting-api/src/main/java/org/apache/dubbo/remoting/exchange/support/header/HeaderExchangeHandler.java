@@ -97,6 +97,7 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
         // find handler by message class.
         Object msg = req.getData();
         try {
+            //ExchangeHandlerAdapter$lambleDubboProtocol
             CompletionStage<Object> future = handler.reply(channel, msg);
             future.whenComplete((appResult, t) -> {
                 try {
@@ -171,10 +172,10 @@ public class HeaderExchangeHandler implements ChannelHandlerDelegate {
             if (request.isEvent()) {
                 handlerEvent(channel, request);
             } else {
+                //ExchangeHandlerAdapter 双向处理
                 if (request.isTwoWay()) {
                     handleRequest(exchangeChannel, request);
                 } else {
-                    //ExchangeHandlerAdapter
                     handler.received(exchangeChannel, request.getData());
                 }
             }

@@ -51,8 +51,15 @@ public class InvokerWrapper<T> implements Invoker<T> {
         return invoker.isAvailable();
     }
 
+    /**
+     * invoker 包装
+     * @param invocation
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invocation invocation) throws RpcException {
+        //invoker = DelegateProviderMetaDataInvoker
         return invoker.invoke(invocation);
     }
 

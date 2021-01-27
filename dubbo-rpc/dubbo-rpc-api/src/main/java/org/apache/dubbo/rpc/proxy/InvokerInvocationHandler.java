@@ -71,7 +71,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
             rpcInvocation.put(Constants.CONSUMER_MODEL, consumerModel);
             rpcInvocation.put(Constants.METHOD_MODEL, consumerModel.getMethodModel(method));
         }
-        //todo 远程invoke调用
+        //todo 远程invoke调用 MockClusterInvoker
         return invoker.invoke(rpcInvocation).recreate();
     }
 }

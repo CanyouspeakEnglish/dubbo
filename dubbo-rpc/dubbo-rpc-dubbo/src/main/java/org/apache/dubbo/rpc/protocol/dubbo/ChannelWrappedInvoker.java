@@ -170,8 +170,14 @@ class ChannelWrappedInvoker<T> extends AbstractInvoker<T> {
 
         }
 
+        /**
+         * 发送channel 包装
+         * @param message
+         * @throws RemotingException
+         */
         @Override
         public void send(Object message) throws RemotingException {
+            //AbstractPeer
             channel.send(message);
         }
 

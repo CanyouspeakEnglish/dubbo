@@ -505,17 +505,17 @@ public class DubboBootstrap extends GenericEventListener {
         }
 
         ApplicationModel.initFrameworkExts();
-
+        //配置中心
         startConfigCenter();
 
         useRegistryAsConfigCenterIfNecessary();
-
+        //加载远程配置
         loadRemoteConfigs();
 
         checkGlobalConfigs();
-
+        //初始化元数据
         initMetadataService();
-
+        //初始化监听
         initEventListener();
 
         if (logger.isInfoEnabled()) {
@@ -926,6 +926,9 @@ public class DubboBootstrap extends GenericEventListener {
         }
     }
 
+    /**
+     *
+     */
     private void exportServices() {
         configManager.getServices().forEach(sc -> {
             // TODO, compatible with ServiceConfig.export()

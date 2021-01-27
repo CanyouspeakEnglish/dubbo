@@ -79,6 +79,14 @@ public class ContextFilter implements Filter, Filter.Listener {
         UNLOADING_KEYS.add(FORCE_USE_TAG);
     }
 
+    /**
+     * next = TraceFilter
+     * 设置上下文
+     * @param invoker
+     * @param invocation
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         Map<String, Object> attachments = invocation.getObjectAttachments();

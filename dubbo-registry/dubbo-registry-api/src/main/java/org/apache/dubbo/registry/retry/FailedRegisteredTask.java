@@ -32,6 +32,12 @@ public final class FailedRegisteredTask extends AbstractRetryTask {
         super(url, registry, NAME);
     }
 
+    /**
+     * 执行注册重试
+     * @param url
+     * @param registry
+     * @param timeout
+     */
     @Override
     protected void doRetry(URL url, FailbackRegistry registry, Timeout timeout) {
         registry.doRegister(url);

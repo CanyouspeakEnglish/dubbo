@@ -50,14 +50,24 @@ public abstract class AbstractLoadBalance implements LoadBalance {
         return ww < 1 ? 1 : (Math.min(ww, weight));
     }
 
+    /**
+     * 模板方法选择
+     * @param invokers   invokers.
+     * @param url        refer url
+     * @param invocation invocation.
+     * @param <T>
+     * @return
+     */
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) {
         if (CollectionUtils.isEmpty(invokers)) {
             return null;
         }
+        //只有一个不用负载
         if (invokers.size() == 1) {
             return invokers.get(0);
         }
+        //开启选择
         return doSelect(invokers, url, invocation);
     }
 
@@ -71,6 +81,7 @@ public abstract class AbstractLoadBalance implements LoadBalance {
      * @param invoker    the invoker
      * @param invocation the invocation of this invoker
      * @return weight
+     * 此处的权重和启动时间有关系 启动时间短权限小
      */
     int getWeight(Invoker<?> invoker, Invocation invocation) {
         int weight;
@@ -87,6 +98,7 @@ public abstract class AbstractLoadBalance implements LoadBalance {
                     if (uptime < 0) {
                         return 1;
                     }
+                    //冷启动
                     int warmup = invoker.getUrl().getParameter(WARMUP_KEY, DEFAULT_WARMUP);
                     if (uptime > 0 && uptime < warmup) {
                         weight = calculateWarmupWeight((int)uptime, warmup, weight);

@@ -29,4 +29,10 @@
     <properties>
         <skip_maven_deploy>true</skip_maven_deploy>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jdk-http</artifactId>
+        </dependency>
+    </dependencies>
 </project>

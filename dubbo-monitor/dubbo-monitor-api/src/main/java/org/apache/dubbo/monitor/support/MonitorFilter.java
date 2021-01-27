@@ -73,12 +73,15 @@ public class MonitorFilter implements Filter, Filter.Listener {
 
 
     /**
+     *
+     * PROVIDER next = ExceptionFilter
      * The invocation interceptor,it will collect the invoke data about this invocation and send it to monitor center
      *
      * @param invoker    service
      * @param invocation invocation.
      * @return {@link Result} the invoke result
      * @throws RpcException
+     * 监控 监控key+1
      */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {

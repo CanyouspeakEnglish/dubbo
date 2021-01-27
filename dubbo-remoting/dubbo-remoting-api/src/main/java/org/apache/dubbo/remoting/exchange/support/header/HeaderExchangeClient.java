@@ -90,8 +90,17 @@ public class HeaderExchangeClient implements ExchangeClient {
         return channel.request(request, executor);
     }
 
+    /**
+     * 发送请求
+     * @param request
+     * @param timeout
+     * @param executor
+     * @return
+     * @throws RemotingException
+     */
     @Override
     public CompletableFuture<Object> request(Object request, int timeout, ExecutorService executor) throws RemotingException {
+        // channel = HeaderExchangeChannel
         return channel.request(request, timeout, executor);
     }
 
