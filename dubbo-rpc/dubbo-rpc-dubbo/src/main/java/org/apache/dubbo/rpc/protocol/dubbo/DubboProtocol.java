@@ -146,7 +146,7 @@ public class DubboProtocol extends AbstractProtocol {
             }
             RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());
             //ProtocolFilterWrapper->EchoFilter->ClassLoaderFilter->GenericFilter->ContextFilter->TraceFilter
-            // ->TimeoutFilter->MonitorFilter->ExceptionFilter->InvokerWrapper->DelegateProviderMetaDataInvoker
+            // ->TimeoutFilter->MonitorFilter->ExceptionFilter->InvokerWrapper->InvokerDelegate->DelegateProviderMetaDataInvoker
             // ->AbstractProxyInvoker->Wrapper#invokeMethod()
             Result result = invoker.invoke(inv);
             return result.thenApply(Function.identity());

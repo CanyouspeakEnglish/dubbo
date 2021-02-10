@@ -16,6 +16,9 @@
  */
 package org.apache.dubbo.demo.provider;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.config.listener.Listener;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 
@@ -24,8 +27,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.concurrent.Executor;
+
 public class Application {
     public static void main(String[] args) throws Exception {
+        ConfigService configService = NacosFactory.createConfigService("118.190.155.155:8848");
+        configService.addListener("com.lzx.test.config", "lzx-group", new Listener() {
+            @Override
+            public Executor getExecutor() {
+                return null;
+            }
+
+            @Override
+            public void receiveConfigInfo(String configInfo) {
+                System.out.printf("configInfo"+configInfo);
+            }
+        });
+        configService.publishConfig("com.lzx.test.config","lzx-group","CES:12313");
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ProviderConfiguration.class);
         context.start();
         System.in.read();
@@ -36,9 +54,15 @@ public class Application {
     @PropertySource("classpath:/spring/dubbo-provider.properties")
     static class ProviderConfiguration {
         @Bean
-        public RegistryConfig registryConfig() {
+        public RegistryConfig zookeeperConfig() {
             RegistryConfig registryConfig = new RegistryConfig();
             registryConfig.setAddress("zookeeper://127.0.0.1:2181");
+            return registryConfig;
+        }
+        @Bean
+        public RegistryConfig nacosConfig() {
+            RegistryConfig registryConfig = new RegistryConfig();
+            registryConfig.setAddress("nacos://192.168.126.187:8848");
             return registryConfig;
         }
     }
